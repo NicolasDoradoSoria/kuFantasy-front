@@ -1,0 +1,25 @@
+import LandingPage from '@/views/pages/public/landing'
+import { createBrowserRouter } from 'react-router'
+import BackEndCaller from './components/backEndCaller'
+import LoginPage from '@/views/pages/public/login'
+import Frame from '@/views/layout/Frame'
+import RegisterPage from '@/views/pages/public/register'
+import PasswordRestorePage from '@/views/pages/public/passwordRestore'
+import NewPasswordPage from '@/views/pages/public/newPassword'
+
+export const router = createBrowserRouter([
+{
+    path: "/",
+    element: <LandingPage />
+},
+{
+    element: <Frame isClient={false} />,
+    children: [
+        {path: "login", element: <BackEndCaller child={<LoginPage />} />},
+        {path: "userSelect", element: <BackEndCaller child={<RegisterPage />} />},
+        {path: "passwordRestore", element: <BackEndCaller child={<PasswordRestorePage />} />},
+        {path: "newPassword", element: <BackEndCaller child={<NewPasswordPage />} />},
+        
+    ]
+}
+])
