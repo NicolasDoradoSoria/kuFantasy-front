@@ -6,6 +6,7 @@ import Frame from '@/views/layout/Frame'
 import RegisterPage from '@/views/pages/public/register'
 import PasswordRestorePage from '@/views/pages/public/passwordRestore'
 import NewPasswordPage from '@/views/pages/public/newPassword'
+import ProfilePage from '@/views/pages/private/Profile'
 
 export const router = createBrowserRouter([
 {
@@ -20,6 +21,14 @@ export const router = createBrowserRouter([
         {path: "passwordRestore", element: <BackEndCaller child={<PasswordRestorePage />} />},
         {path: "newPassword", element: <BackEndCaller child={<NewPasswordPage />} />},
         
+    ]
+},
+{
+    path: "/user",
+    element: <Frame isClient={true} />,
+    children: [
+        {path: "profile", element: <BackEndCaller child={<ProfilePage />} />},
+
     ]
 }
 ])
