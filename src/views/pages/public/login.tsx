@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FaEye, FaEyeSlash  } from "react-icons/fa";
+import { Link } from "react-router";
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +51,9 @@ const LoginPage = () => {
                             Iniciar sesión
                         </motion.button>
                     </form>
-            </motion.div>
+
+                    <p className="mt-4 text-gray-600">¿No tienes una cuenta? <Link to="/userSelect" className="text-red-500 hover:underline">Regístrate aquí</Link></p>
+                </motion.div>
 
             <div className="hidden md:flex w-1/2">
                 <img src="/login-2.jpeg" alt="Login Background" className="w-full h-full object-cover" />

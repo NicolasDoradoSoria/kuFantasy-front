@@ -7,6 +7,7 @@ import RegisterPage from '@/views/pages/public/register'
 import PasswordRestorePage from '@/views/pages/public/passwordRestore'
 import NewPasswordPage from '@/views/pages/public/newPassword'
 import ProfilePage from '@/views/pages/private/Profile'
+import NotFoundPage from '@/views/pages/public/notFound'
 
 export const router = createBrowserRouter([
 {
@@ -30,5 +31,6 @@ export const router = createBrowserRouter([
         {path: "profile", element: <BackEndCaller child={<ProfilePage />} />},
 
     ]
-}
+},
+{ path: '*', element: <NotFoundPage /> },
 ])
