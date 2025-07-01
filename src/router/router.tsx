@@ -12,7 +12,10 @@ import NotFoundPage from '@/views/pages/public/notFound'
 export const router = createBrowserRouter([
 {
     path: "/",
-    element: <LandingPage />
+    element: <Frame isClient={false} />,
+    children: [
+        {index: true, element: <LandingPage />},
+    ]
 },
 {
     element: <Frame isClient={false} />,
