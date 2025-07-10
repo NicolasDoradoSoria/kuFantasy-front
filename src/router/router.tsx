@@ -8,6 +8,7 @@ import PasswordRestorePage from '@/views/pages/public/passwordRestore'
 import NewPasswordPage from '@/views/pages/public/newPassword'
 import ProfilePage from '@/views/pages/private/Profile'
 import NotFoundPage from '@/views/pages/public/notFound'
+import CharacterSelectPage from '@/views/pages/private/characterSelect'
 
 export const router = createBrowserRouter([
 {
@@ -32,7 +33,7 @@ export const router = createBrowserRouter([
     element: <Frame isClient={true} />,
     children: [
         {path: "profile", element: <BackEndCaller child={<ProfilePage />} />},
-
+        {path: "characterSelect", element: <BackEndCaller child={<CharacterSelectPage />} />},
     ]
 },
 { path: '*', element: <NotFoundPage /> },

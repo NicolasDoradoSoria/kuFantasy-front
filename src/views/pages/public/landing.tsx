@@ -23,7 +23,7 @@ const LandingPage = () => {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
-          className="bg-red-600 hover:bg-red-700 transition-colors duration-300 px-8 py-3 rounded-xl text-lg font-semibold shadow-lg">
+          className="bg-red-600 hover:bg-red-700 transition-colors duration-300 px-8 py-3 rounded-xl text-lg font-semibold shadow-lg cursor-pointer text-white">
           Jugar
         </motion.button>
 
