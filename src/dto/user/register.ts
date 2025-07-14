@@ -1,13 +1,14 @@
 export type RegisterDto = {
-    username: string;
+    name: string;
+    lastName: string;
     mail: string;
-    password: string;
-    confirmPassword: string;
+    rawPassword: string;
+    
 }
 
 export const createEmptyRegisterInfo = (): RegisterDto => ({
-    username: "",
+    name: "",
+    lastName: "",
     mail: "",
-    password: "",
-    confirmPassword: ""
+    rawPassword: ""
 })

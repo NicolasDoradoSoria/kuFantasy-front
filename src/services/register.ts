@@ -3,6 +3,7 @@ import axiosClient from "./client/axios";
 
 export const RegisterService = {
     async registerUser(data: RegisterDto): Promise<void> {
-        await axiosClient.post("/auth/register", data);
+        console.log(data)
+        await axiosClient.post<Response>("/registration/", data);
     }
 }

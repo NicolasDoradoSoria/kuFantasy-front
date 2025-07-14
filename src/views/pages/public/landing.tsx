@@ -8,7 +8,7 @@ const LandingPage = () => {
       
       <img src="/elfo.png" className="absolute bottom-0 left-0 w-32 opacity-30 z-0" />
       <img src="/enano1.png" className="absolute bottom-0 right-0 w-32 opacity-80 z-10 drop-shadow-lg" />
-
+        
       <p className="text-xl italic text-gray-300 mb-4">Forja tu destino en las tierras de Kufantasy</p>
 
       <motion.div

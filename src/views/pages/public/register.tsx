@@ -1,28 +1,56 @@
-import { createEmptyRegisterInfo, type RegisterDto } from "@/dto/user/register";
 import { useErrorHandler } from "@/router/context/errorHandler";
 import { RegisterService } from "@/services/register";
 import PublicAuthLayout from "@/views/layout/publicAuthLayout";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
+type FormData = {
+    mail: string
+    rawPassword: string
+    confirmPassword: string
+    name: string
+    lastName: string
+    termsAccepted: boolean
+}
 
 const RegisterPage = () => {
-    const [user, setUser] = useState<RegisterDto>(createEmptyRegisterInfo())
 
-    const {username, mail, password, confirmPassword} = user
     const { handleError } = useErrorHandler()
 
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-    const [termsAccepted, setTermsAccepted] = useState(false)
 
     const navigate = useNavigate()
 
-    const isFormInvalid =!username.trim() ||!mail.trim() ||!password.trim() ||!confirmPassword.trim() ||password !== confirmPassword ||!termsAccepted
+    const {
+        register,
+        handleSubmit,
+        formState: {errors, isValid},
+        reset,
+        watch,
+        setValue
+    } = useForm<FormData>({
+        defaultValues: {
+            mail: "",
+            rawPassword: "",
+            confirmPassword: "",
+            name: "",
+            lastName: "",
+            termsAccepted: false,
+        },
+        mode: "onChange"
+    })
+
+    const rawPassword = watch("rawPassword")
+    const confirmPassword = watch("confirmPassword")
+    const termsAccepted  = watch("termsAccepted")
+
+    const passwordMismatch = rawPassword && confirmPassword && rawPassword !== confirmPassword
 
     const showTerms = () => {
         Swal.fire({
@@ -39,39 +67,53 @@ const RegisterPage = () => {
         });
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const onSubmit = async (data: FormData) => {
         try {
-            await RegisterService.registerUser(user)
+            const { confirmPassword, termsAccepted, ...registerDto } = data
+            await RegisterService.registerUser(registerDto)
             toast.success('Registro exitoso, se le ha enviado un email para confirmar su cuenta. Ya puede iniciar sesión.')
-            navigate('/login')
+            navigate('/')
         } catch (error) {
+            console.log(error)
            handleError(error) 
         }
         finally {
-            setUser(createEmptyRegisterInfo())
-            setTermsAccepted(false)
+           reset()
         }
     }
 
     return(
         <PublicAuthLayout>
     
-            <form className="w-full max-w-sm" onSubmit={handleSubmit}>
+            <form className="w-full max-w-sm" onSubmit={handleSubmit(onSubmit)}>
 
                 <div className="mb-4">
 
-                    <label className="block text-sm font-medium text-black mb-1">Username</label>
+                    <label className="block text-sm font-medium text-black mb-1">Nombre</label>
 
                         <input
-                            value={username}
+                            {...register("name", {
+                                required: "nombre Requerido"})}
                             type="text"
-                            onChange={(e) => setUser({ ...user, username: e.target.value })}
                             className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
                             placeholder="Ingrese su nombre de usuario"
-                            required
                         />
+                        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}                        
 
+                </div>
+                <div className="mb-4">
+
+                    <label className="block text-sm font-medium text-black mb-1">Apellido</label>
+
+                        <input
+                            {...register("lastName", {
+                                required: "nombre Requerido"})}
+                            type="text"
+                            className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
+                            placeholder="Ingrese su nombre de usuario"
+                        />
+                        {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
+                        
                 </div>
 
                 <div className="mb-4">
@@ -79,13 +121,18 @@ const RegisterPage = () => {
                     <label className="block text-sm font-medium text-black mb-1">Email</label>
 
                         <input
-                            value={mail}
+                            {...register("mail", {
+                                required: "Email requerido",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Formato de email inválido"
+                                }
+                            })}
                             type="email"
-                            onChange={(e) => setUser({ ...user, mail: e.target.value })}
                             className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
                             placeholder="Ingrese su email"
-                            required
                             />
+                            {errors.mail && <p className="text-red-500 text-sm">{errors.mail.message}</p>}
 
                 </div>
 
@@ -95,12 +142,17 @@ const RegisterPage = () => {
 
                         <input 
                             type={showPassword ? "text" : "password"} 
-                            value={password}
-                            onChange={(e) => setUser({ ...user, password: e.target.value })}
+                            {...register("rawPassword", {
+                                required: "COntraseña requerida",
+                                minLength: {
+                                    value: 6,
+                                    message: "minimo 6 caracteres"
+                                }
+                            })}
                             className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
                             placeholder="Ingrese su contraseña"
-                            required
                         />
+                        {errors.rawPassword && <p className="text-red-500 text-sm">{errors.rawPassword.message}</p>}
                         <motion.p
                             initial={{ opacity: 0, y: 5 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -126,13 +178,15 @@ const RegisterPage = () => {
 
                         <input 
                             type={showConfirmPassword ? "text" : "password"} 
-                            value={confirmPassword}
-                            onChange={(e) => setUser({ ...user, confirmPassword: e.target.value })}
+                            {...register("confirmPassword", {
+                                required: "Confirme la contraseña",
+                                validate: (value) =>
+                                value === watch("rawPassword") || "Las contraseñas no coinciden"
+                            })}
                             className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
                             placeholder="Confirme su contraseña"
-                            required
                         />
-
+                        {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
                         <span
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             className="absolute right-3 top-10 cursor-pointer text-gray-500 hover:text-gray-800"
@@ -143,18 +197,18 @@ const RegisterPage = () => {
                         </span>
                 </div>
 
-                {password && confirmPassword && password !== confirmPassword && (
+                {passwordMismatch && (
                     <p className="text-sm text-red-500 mb-4">Las contraseñas no coinciden</p>
                 )}
+
                 <div className="mb-4 flex items-center gap-2">
                     <input
                         type="checkbox"
+                        {...register("termsAccepted", { required: true })}
                         id="terms"
-                        checked={termsAccepted}
-                        onChange={(e) => setTermsAccepted(e.target.checked)}
                         className="w-4 h-4"
                     />
-                    <label htmlFor="terms" className="text-sm text-gray-700">
+                    <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
                         Acepto los{" "}
                         <span
                         onClick={showTerms}
@@ -169,14 +223,12 @@ const RegisterPage = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className={`w-full text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200 ${
-                        isFormInvalid ? "bg-gray-400 cursor-not-allowed" : "bg-red-500 hover:bg-red-600"
+                        !isValid || passwordMismatch || !termsAccepted ? "bg-gray-400 cursor-not-allowed" : "bg-red-500 hover:bg-red-600"
                     }`}
                     type="submit"
-                    disabled={isFormInvalid}
+                    disabled={!isValid || passwordMismatch || !termsAccepted}
                 >
-
-                    Registrarse
-
+                    Siguiente
                 </motion.button>
                     </form>
 

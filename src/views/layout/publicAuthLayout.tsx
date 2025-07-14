@@ -34,9 +34,12 @@ const PublicAuthLayout = ({children, titleOverride, imageSrc = "/login-2.jpeg", 
     <div className="h-screen flex">
         <motion.div 
             className="w-full md:w-1/2 bg-gray-200 flex flex-col justify-center items-center p-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}>
+            
+            initial={{ opacity: 0, x: -500 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            exit={{ opacity: 0, x: 500 }}
+            >
             
             <div className="w-full flex flex-col items-center mb-6 relative">
 
