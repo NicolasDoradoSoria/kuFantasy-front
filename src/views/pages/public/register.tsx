@@ -72,7 +72,7 @@ const RegisterPage = () => {
             const { confirmPassword, termsAccepted, ...registerDto } = data
             await RegisterService.registerUser(registerDto)
             toast.success('Registro exitoso, se le ha enviado un email para confirmar su cuenta. Ya puede iniciar sesión.')
-            navigate('/')
+            navigate('/login')
         } catch (error) {
             console.log(error)
            handleError(error) 
@@ -228,7 +228,7 @@ const RegisterPage = () => {
                     type="submit"
                     disabled={!isValid || passwordMismatch || !termsAccepted}
                 >
-                    Siguiente
+                    Registrarse
                 </motion.button>
                     </form>
 
