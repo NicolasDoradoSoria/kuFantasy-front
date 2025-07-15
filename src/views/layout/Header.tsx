@@ -1,35 +1,63 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router";
+import useAuth from "@/hooks/useAuth";
 
-interface HeaderProps  {
-    isClient: boolean
-}
+const Header = () => {
+    const { isAuthenticated, logout } = useAuth();
 
-const Header = ({ isClient }: HeaderProps ) => {
+    const handleLogout = () => {
+        logout();
+    };
 
     return ( 
         <motion.header
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            className="fixed top-0 w-full z-50 backdrop-blur-sm bg-black/30 text-white px-6 py-4 flex justify-between items-center shadow-md">
+            className="fixed top-0 w-full z-50 backdrop-blur-md bg-gradient-to-r from-black/40 via-purple-900/30 to-black/40 border-b border-yellow-500/20 text-white px-6 py-4 flex justify-between items-center shadow-lg shadow-purple-500/10">
 
-            <Link to={isClient ? "/user/profile" : "/"}>
-                <h1 className="text-xl font-bold text-yellow-300">kuFantasy</h1>
+            <Link to={isAuthenticated ? "/user/profile" : "/"} className="group">
+                <motion.h1 
+                    className="text-2xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent drop-shadow-lg"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                >
+                    ⚔️ kuFantasy ⚔️
+                </motion.h1>
+                <div className="h-0.5 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Link>
 
-            {isClient ? (
+            {isAuthenticated ? (
 
-                <nav className="flex gap-4 text-sm">
-                    <Link to="/user/profile" className="hover:underline">Perfil</Link>
-                    <button className="hover:underline text-red-400">Cerrar sesion</button>
+                <nav className="flex gap-6 text-sm">
+                    <Link to="/user/profile" className="relative group flex items-center gap-2">
+                        <span className="text-lg">👤</span>
+                        <span className="font-medium">Perfil</span>
+                        <span className="transition duration-300 absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-yellow-300 to-orange-400 transition-all group-hover:w-full" />
+                    </Link>
+                    <button 
+                        onClick={handleLogout}
+                        className="relative group flex items-center gap-2 text-red-300 hover:text-red-200"
+                    >
+                        <span className="text-lg">🚪</span>
+                        <span className="font-medium">Cerrar sesión</span>
+                        <span className="transition duration-300 absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-red-400 to-red-300 transition-all group-hover:w-full" />
+                    </button>
                 </nav>
 
             ) : (
 
-                <nav className="flex gap-4 text-sm">
-                    <Link to="/login" className="relative group">Iniciar sesión<span className="transition duration-200 absolute left-0 -bottom-1 w-0 h-0.5 bg-yellow-300 transition-all group-hover:w-full" /></Link>
-                    <Link to="/userSelect" className="relative group">Registrarse<span className="transition duration-200 absolute left-0 -bottom-1 w-0 h-0.5 bg-yellow-300 transition-all group-hover:w-full" /></Link>
+                <nav className="flex gap-6 text-sm">
+                    <Link to="/login" className="relative group flex items-center gap-2">
+                        <span className="text-lg">🔑</span>
+                        <span className="font-medium">Iniciar sesión</span>
+                        <span className="transition duration-300 absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-yellow-300 to-orange-400 transition-all group-hover:w-full" />
+                    </Link>
+                    <Link to="/userSelect" className="relative group flex items-center gap-2">
+                        <span className="text-lg">⚡</span>
+                        <span className="font-medium">Registrarse</span>
+                        <span className="transition duration-300 absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-yellow-300 to-orange-400 transition-all group-hover:w-full" />
+                    </Link>
                 </nav>
 
             )}
