@@ -2,6 +2,7 @@ import { RouterProvider } from "react-router"
 import { router } from "./router/router"
 import { AuthGuard } from "./router/context/authGuard"
 import { ToastContainer } from 'react-toastify'
+import './styles/App.css'
 function App() {
 
   return (

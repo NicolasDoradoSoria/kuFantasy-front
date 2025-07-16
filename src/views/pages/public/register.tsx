@@ -1,11 +1,13 @@
+import FormMotion from "@/components/FormMotion";
 import { useErrorHandler } from "@/router/context/errorHandler";
 import { RegisterService } from "@/services/register";
+import MotionField from "@/views/components/motion/field";
 import PublicAuthLayout from "@/views/layout/publicAuthLayout";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useNavigate } from "react-router";
+import { FaEnvelope, FaEye, FaEyeSlash, FaUser, FaLock, FaScroll } from "react-icons/fa";
+import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
@@ -32,8 +34,7 @@ const RegisterPage = () => {
         handleSubmit,
         formState: {errors, isValid},
         reset,
-        watch,
-        setValue
+        watch
     } = useForm<FormData>({
         defaultValues: {
             mail: "",
@@ -47,10 +48,8 @@ const RegisterPage = () => {
     })
 
     const rawPassword = watch("rawPassword")
-    const confirmPassword = watch("confirmPassword")
-    const termsAccepted  = watch("termsAccepted")
 
-    const passwordMismatch = rawPassword && confirmPassword && rawPassword !== confirmPassword
+    const passwordMismatch = rawPassword && watch("confirmPassword") && rawPassword !== watch("confirmPassword")
 
     const showTerms = () => {
         Swal.fire({
@@ -71,7 +70,7 @@ const RegisterPage = () => {
         try {
             const { confirmPassword, termsAccepted, ...registerDto } = data
             await RegisterService.registerUser(registerDto)
-            toast.success('Registro exitoso, se le ha enviado un email para confirmar su cuenta. Ya puede iniciar sesión.')
+            toast.success('¡Registro exitoso! Se ha enviado un email para confirmar tu cuenta. Ya puedes iniciar sesión. 🧙‍♂️')
             navigate('/login')
         } catch (error) {
             console.log(error)
@@ -85,152 +84,189 @@ const RegisterPage = () => {
     return(
         <PublicAuthLayout>
     
-            <form className="w-full max-w-sm" onSubmit={handleSubmit(onSubmit)}>
+            <FormMotion onSubmit={handleSubmit(onSubmit)}>
 
-                <div className="mb-4">
+                <MotionField
+                    label="Nombre"
+                    icon={<FaUser className="text-purple-600" />}
+                    error={errors.name?.message}
+                    className="relative group"
+                    delay={0.9}
+                >
 
-                    <label className="block text-sm font-medium text-black mb-1">Nombre</label>
+                    <input
+                        {...register("name", {
+                            required: "El nombre es obligatorio"})}
+                        type="text"
+                        className="w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border-2 border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:border-purple-300"
+                        placeholder="Tu nombre"
+                    />
 
-                        <input
-                            {...register("name", {
-                                required: "nombre Requerido"})}
-                            type="text"
-                            className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
-                            placeholder="Ingrese su nombre de usuario"
-                        />
-                        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}                        
+                </MotionField>
+              
+                <MotionField
+                    label="Apellido"
+                    icon={<FaUser className="text-purple-600" />}
+                    error={errors.lastName?.message}
+                    className="relative group"
+                    delay={1.0}
+                >
+                    <input
+                        {...register("lastName", {
+                            required: "El apellido es obligatorio"})}
+                        type="text"
+                        className="w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border-2 border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:border-purple-300"
+                        placeholder="Tu apellido"
+                    />
+                </MotionField>
 
-                </div>
-                <div className="mb-4">
+                <MotionField
+                    label="Email"
+                    icon={<FaEnvelope className="text-purple-600" />}
+                    error={errors.mail?.message}
+                    className="relative group"
+                    delay={1.1}
+                >
+                    <input
+                        {...register("mail", {
+                            required: "El email es obligatorio",
+                            pattern: {
+                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message: "El email no es válido"
+                            }
+                        })}
+                        type="email"
+                        className="w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border-2 border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:border-purple-300"
+                        placeholder="tu@email.com"
+                    />
+                </MotionField>
 
-                    <label className="block text-sm font-medium text-black mb-1">Apellido</label>
+                <MotionField
+                    label="Contraseña"
+                    icon={<FaLock className="text-purple-600" />}
+                    error={errors.rawPassword?.message}
+                    className="relative group"
+                    delay={1.2}
+                >
+                    <input
+                        type={showPassword ? "text" : "password"} 
+                        {...register("rawPassword", {
+                            required: "La contraseña es obligatoria",
+                            minLength: {
+                                value: 6,
+                                message: "La contraseña debe tener al menos 6 caracteres"
+                            }
+                        })}
+                        className="w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border-2 border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:border-purple-300 pr-12"
+                        placeholder="••••••••"
+                    />
+                </MotionField>
 
-                        <input
-                            {...register("lastName", {
-                                required: "nombre Requerido"})}
-                            type="text"
-                            className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
-                            placeholder="Ingrese su nombre de usuario"
-                        />
-                        {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
-                        
-                </div>
+                <MotionField
+                    label="Confirmar Contraseña"
+                    icon={<FaLock className="text-purple-600" />}
+                    error={errors.confirmPassword?.message}
+                    className="relative group"
+                    delay={1.3}
+                >
+                    <input 
+                        type={showConfirmPassword ? "text" : "password"} 
+                        {...register("confirmPassword", {
+                            required: "Confirma la contraseña",
+                            validate: (value) =>
+                            value === watch("rawPassword") || "Las contraseñas no coinciden"
+                        })}
+                        className="w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border-2 border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:border-purple-300 pr-12"
+                        placeholder="••••••••"
+                    />
 
-                <div className="mb-4">
+                    <motion.button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-purple-600 transition-colors duration-200 z-10 cursor-pointer"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                    >
 
-                    <label className="block text-sm font-medium text-black mb-1">Email</label>
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
 
-                        <input
-                            {...register("mail", {
-                                required: "Email requerido",
-                                pattern: {
-                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message: "Formato de email inválido"
-                                }
-                            })}
-                            type="email"
-                            className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
-                            placeholder="Ingrese su email"
-                            />
-                            {errors.mail && <p className="text-red-500 text-sm">{errors.mail.message}</p>}
+                    </motion.button>
 
-                </div>
+                </MotionField>
 
-                <div className="mb-4 relative">
+                <motion.div 
+                    className="mb-4 flex items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.5 }}
+                >
 
-                    <label className="block text-sm font-medium text-black mb-1">Contraseña</label>
-
-                        <input 
-                            type={showPassword ? "text" : "password"} 
-                            {...register("rawPassword", {
-                                required: "COntraseña requerida",
-                                minLength: {
-                                    value: 6,
-                                    message: "minimo 6 caracteres"
-                                }
-                            })}
-                            className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
-                            placeholder="Ingrese su contraseña"
-                        />
-                        {errors.rawPassword && <p className="text-red-500 text-sm">{errors.rawPassword.message}</p>}
-                        <motion.p
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-xs text-gray-500 mt-1"
-                            >
-                                🧙 Un mago nunca comparte su contraseña
-                        </motion.p>
-
-                        <span
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-10 cursor-pointer text-gray-500 hover:text-gray-800"
-                            >
-
-                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-
-                        </span>
-
-                </div>
-
-                <div className="mb-6 relative">
-
-                    <label className="block text-sm font-medium text-black mb-1">Confirmar Contraseña</label>
-
-                        <input 
-                            type={showConfirmPassword ? "text" : "password"} 
-                            {...register("confirmPassword", {
-                                required: "Confirme la contraseña",
-                                validate: (value) =>
-                                value === watch("rawPassword") || "Las contraseñas no coinciden"
-                            })}
-                            className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:ring-2 focus:ring-red-500 outline-none"
-                            placeholder="Confirme su contraseña"
-                        />
-                        {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
-                        <span
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute right-3 top-10 cursor-pointer text-gray-500 hover:text-gray-800"
-                        >
-
-                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-
-                        </span>
-                </div>
-
-                {passwordMismatch && (
-                    <p className="text-sm text-red-500 mb-4">Las contraseñas no coinciden</p>
-                )}
-
-                <div className="mb-4 flex items-center gap-2">
                     <input
                         type="checkbox"
                         {...register("termsAccepted", { required: true })}
                         id="terms"
-                        className="w-4 h-4"
+                        className="w-5 h-5 text-purple-600 bg-gray-100 border-purple-300 rounded focus:ring-purple-500 focus:ring-2"
                     />
-                    <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer">
+
+                    <label htmlFor="terms" className="text-sm text-gray-700 cursor-pointer flex items-center gap-2">
+                        <FaScroll className="text-purple-600" />
+                       
                         Acepto los{" "}
+                        
                         <span
-                        onClick={showTerms}
-                        className="text-red-500 underline cursor-pointer"
+                            onClick={showTerms}
+                            className="text-purple-600 hover:text-purple-800 underline cursor-pointer font-semibold transition-colors duration-200"
                         >
-                        Términos y Condiciones
-                        </span>
+                            Términos y Condiciones
+                    </span>
+
                     </label>
-                </div>
+
+                </motion.div>
 
                 <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={`w-full text-white font-semibold py-2 px-4 rounded-md transition-colors duration-200 ${
-                        !isValid || passwordMismatch || !termsAccepted ? "bg-gray-400 cursor-not-allowed" : "bg-red-500 hover:bg-red-600"
-                    }`}
+                    whileHover={{ 
+                        scale: 1.02, 
+                        boxShadow: "0px 0px 20px rgba(147, 51, 234, 0.4)",
+                        background: "linear-gradient(135deg, #8b5cf6, #3b82f6)"
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full font-bold py-3 rounded-lg shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden
+                        ${!isValid || passwordMismatch || !watch("termsAccepted") 
+                            ? 'bg-gray-400 text-white cursor-not-allowed' 
+                            : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white'
+                        }`}
                     type="submit"
-                    disabled={!isValid || passwordMismatch || !termsAccepted}
+                    disabled={!isValid || passwordMismatch || !watch("termsAccepted")}
                 >
-                    Registrarse
+
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                        ⚡ Registrarse
+                    </span>
+
                 </motion.button>
-                    </form>
+
+            </FormMotion>
+
+            <motion.div 
+                className="mt-6 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.6 }}
+            >
+                <p className="text-gray-600 mb-2">
+                    ¿Ya tienes una cuenta?
+                </p>
+                <Link 
+                    to="/login" 
+                    className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-800 font-semibold hover:underline transition-colors duration-200 group"
+                >
+                    <span>Iniciar sesión</span>
+                    <span className="group-hover:translate-x-1 transition-transform duration-200">🔑</span>
+                </Link>
+            </motion.div>
 
         </PublicAuthLayout>
     )

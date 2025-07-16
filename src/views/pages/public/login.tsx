@@ -5,10 +5,12 @@ import AuthService from "@/services/auth";
 import PublicAuthLayout from "@/views/layout/publicAuthLayout";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { FaEye, FaEyeSlash  } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaEnvelope, FaLock } from "react-icons/fa";
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import {useForm } from 'react-hook-form'
+import FormMotion from "@/components/FormMotion";
+import MotionField from "@/views/components/motion/field";
 
 const LoginPage = () => {
     const {login} = useAuth()
@@ -16,9 +18,7 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const { handleError } = useErrorHandler()
 
-
     const handleClickShowPassword = () => setShowPassword((show) => !show)
-    
 
     const {register, handleSubmit, reset, formState: { errors, isValid }} = useForm<LoginDTO>({
         defaultValues: createEmptyLoginInfo(),
@@ -29,7 +29,7 @@ const LoginPage = () => {
         try {
             const jwToken = await AuthService.login(data);
             login(jwToken);
-            toast.success('Registro exitoso, se le ha enviado un email para confirmar su cuenta. Ya puede iniciar sesión.')
+            toast.success('¡Inicio de sesión exitoso! Bienvenido a Ku-Fantasy 🧙‍♂️')
             navigate("/");
             reset()
         } catch (error) {
@@ -41,79 +41,93 @@ const LoginPage = () => {
     return (
 
            <PublicAuthLayout>
-                    <form className="w-full max-w-sm" onSubmit={handleSubmit(onSubmit)}>
+                    <FormMotion onSubmit={handleSubmit(onSubmit)}>
 
-                        <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="mb-4">
-                            <label htmlFor="email" className="block text-black text-sm font-medium mb-2">Email</label>
-                            <input 
-                                {...register("mail", {
-                                    required: "El email es obligatorio",
-                                    pattern: {
-                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                        message: "El email no es válido"
-                                    }
-                                })}
-                                
-                            type="email" className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500" />
-                            {errors.mail && <p className="text-red-500 text-sm mt-1">{errors.mail.message}</p>}
-
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6, delay: 0.4 }}
-                            className="mb-6 relative">
-                                <label htmlFor="password" className="block text-black text-sm font-medium mb-2">Contraseña</label>
+                        <MotionField
+                            label="Email"
+                            icon={<FaEnvelope className="text-purple-600" />}
+                            error={errors.mail?.message}
+                            className="relative group"
+                            delay={0.9} 
+                        >
                                 <input 
-                                    {...register("password", {
-                                        required: "La contraseña es obligatoria",
-                                        minLength: {
-                                            value: 6,
-                                            message: "La contraseña debe tener al menos 6 caracteres"
+                                    {...register("mail", {
+                                        required: "El email es obligatorio",
+                                        pattern: {
+                                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                            message: "El email no es válido"
                                         }
                                     })}
-                            type={showPassword ? "text" : "password"}
-                            className="w-full px-4 py-2 rounded-md bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-red-500" 
-                        />
-
-                            <motion.p
-                                initial={{ opacity: 0, y: 5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-xs text-gray-500 mt-1"
-                            >
-                                🧙 Un mago nunca comparte su contraseña
-                            </motion.p>
-                            <span
-                                onClick={handleClickShowPassword}
-
-                                className="absolute right-3 top-10 cursor-pointer text-gray-500 hover:text-gray-800">
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </span>
-                            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-
-                        </motion.div>
+                                    type="email" 
+                                    className="w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border-2 border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:border-purple-300" 
+                                    placeholder="tu@email.com"
+                                />
+                        </MotionField>
+                        
+                        <MotionField
+                            label="Contraseña"
+                            icon={<FaLock className="text-purple-600" />}
+                            error={errors.password?.message}
+                            className="relative group"
+                            delay={1.1}
+                        >
+                            <input 
+                                        {...register("password", {
+                                            required: "La contraseña es obligatoria",
+                                            minLength: {
+                                                value: 6,
+                                                message: "La contraseña debe tener al menos 6 caracteres"
+                                            }
+                                        })}
+                                        type={showPassword ? "text" : "password"}
+                                        className="w-full px-4 py-3 rounded-lg bg-white/80 backdrop-blur-sm border-2 border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:border-purple-300 pr-12" 
+                                        placeholder="••••••••"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                                    <motion.button
+                                        type="button"
+                                        onClick={handleClickShowPassword}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-purple-600 transition-colors duration-200 cursor-pointer z-10"
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.9 }}
+                                    >
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </motion.button>
+                        </MotionField>
 
                         <motion.button
-                            whileHover={{ scale: 1.05, boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.5)" }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{ 
+                                scale: 1.02, 
+                                boxShadow: "0px 0px 20px rgba(147, 51, 234, 0.4)",
+                                background: "linear-gradient(135deg, #8b5cf6, #3b82f6)"
+                            }}
+                            whileTap={{ scale: 0.98 }}
                             type="submit"
                             disabled={!isValid}
-                            className={`w-full font-bold py-2 rounded-md shadow-md transition-colors duration-200 cursor-pointer 
+                            className={`w-full font-bold py-3 rounded-lg shadow-lg transition-all duration-300 cursor-pointer relative overflow-hidden
                                 ${!isValid 
                                     ? 'bg-gray-400 text-white cursor-not-allowed' 
-                                    : 'bg-black hover:bg-gray-800 text-white'
+                                    : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white'
                                 }`}
                         >
-                            Iniciar sesión
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                            <span className="relative z-10 flex items-center justify-center gap-2">
+                                🔮 Iniciar sesión
+                            </span>
                         </motion.button>
-                    </form>
+                    </FormMotion>
 
-                    <p className="mt-4 text-gray-600">¿No tienes una cuenta? <Link to="/userSelect" className="text-red-500 hover:underline">Regístrate aquí</Link></p>
+                    <motion.div 
+                        className="mt-6 text-gray-600 text-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.5 }}
+                    >
+                        ¿No tienes una cuenta? 
+                        <Link to="/userSelect" className="text-purple-600 hover:text-purple-800 font-semibold hover:underline ml-1 transition-colors duration-200">
+                            Regístrate aquí ⚡
+                        </Link>
+                    </motion.div>
            
            </PublicAuthLayout>
       
