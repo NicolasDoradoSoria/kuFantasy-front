@@ -9,6 +9,7 @@ import NewPasswordPage from '@/views/pages/public/newPassword'
 import ProfilePage from '@/views/pages/private/profile'
 import NotFoundPage from '@/views/pages/public/notFound'
 import CharacterSelectPage from '@/views/pages/private/characterSelect'
+import TerritoryPage from '@/views/pages/private/territory'
 
 export const router = createBrowserRouter([
 {
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
     children: [
         {path: "profile", element: <BackEndCaller child={<ProfilePage />} />},
         {path: "characterSelect", element: <BackEndCaller child={<CharacterSelectPage />} />},
+        {path: "territory", element: <BackEndCaller child={<TerritoryPage />} />},
     ]
 },
 { path: '*', element: <NotFoundPage /> },
