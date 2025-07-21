@@ -1,121 +1,213 @@
+import type { RaceDTO } from "@/dto/races/RaceDTO";
+import { useOnInit } from "@/hooks/useOnInit";
+import { useCharacter } from "@/hooks/useCharacter";
+import RaceService from "@/services/races";
+import { mockRaces } from "@/utils/mocks/races";
 import PublicAuthLayout from "@/views/layout/publicAuthLayout";
 import { motion } from "framer-motion";
 import { useState } from "react";
 // import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 
-const characters = {
-    Orco: {
-        img: "/public/elfo.png", // Cambia por /public/orco.png si tienes la imagen
-        desc: "Los orcos son fuertes y resistentes, ideales para el combate cuerpo a cuerpo.",
-        stats: {vida: 100, fuerza: 20, agilidad: 10, inteligencia: 5},
-    },
-    Elfo: {
-        img: "/public/elfo.png",
-        desc: "Los elfos son ágiles y sabios, expertos en magia y arquería.",
-        stats: {vida: 80, fuerza: 10, agilidad: 20, inteligencia: 15},
-    },
-    Humano: {
-        img: "/public/elfo.png", // Cambia por /public/humano.png si tienes la imagen
-        desc: "Los humanos son equilibrados y versátiles, adaptándose a cualquier situación.",
-        stats: {vida: 90, fuerza: 15, agilidad: 15, inteligencia: 10},  
-    },
-    Enano: {
-        img: "/public/enano.png",
-        desc: "Los enanos son robustos y expertos en armas pesadas y minería.",
-        stats: {vida: 110, fuerza: 25, agilidad: 5, inteligencia: 10},  
-    },
-    Gnomo: {
-        img: "/public/elfo.png", // Cambia por /public/gnomo.png si tienes la imagen
-        desc: "Los gnomos son pequeños, rápidos y muy inteligentes.",
-        stats: {vida: 70, fuerza: 5, agilidad: 15, inteligencia: 20},  
-    },
-}
-
 const statIcons = {
-    vida: "❤️",
-    fuerza: "💪",
-    agilidad: "🏃",
-    inteligencia: "🧠"
+    life: "❤️",
+    attack: "💪",
+    defense: "🛡️",
+    speed: "🏃",
+    magic: "🧠"
 }
 
 const statColors = {
-    vida: "from-red-400 to-red-600",
-    fuerza: "from-yellow-300 to-yellow-500",
-    agilidad: "from-green-400 to-green-600",
-    inteligencia: "from-blue-400 to-blue-600"
+    life: "from-red-400 to-red-600",
+    attack: "from-yellow-300 to-yellow-500",
+    defense: "from-gray-400 to-gray-600",
+    speed: "from-green-400 to-green-600",
+    magic: "from-blue-400 to-blue-600"
+}
+
+const statLabels = {
+    life: "Vida",
+    attack: "Ataque",
+    defense: "Defensa",
+    speed: "Velocidad",
+    magic: "Magia"
 }
 
 const CharacterSelectPage = () => {
-    const [selected, setSelected] = useState<keyof typeof characters>("Orco");
-    // const navigate = useNavigate();
+    const [selected, setSelected] = useState<RaceDTO | null>(null);
+    const [races, setRaces] = useState<RaceDTO[]>([]);
+    const [loading, setLoading] = useState(true);
+    const { createCharacter } = useCharacter();
+
+    useOnInit(async () => {
+        try {
+            const racesData = await RaceService.getAllRaces();
+            setRaces(racesData);
+            if (racesData.length > 0) {
+                setSelected(racesData[0]);
+            }
+        } catch (error) {
+            console.warn("Backend not available, using mock data:", error);
+            setRaces(mockRaces);
+            if (mockRaces.length > 0) {
+                setSelected(mockRaces[0]);
+            }
+        } finally {
+            setLoading(false);
+        }
+    });
 
     const handleSelectCharacter = async () => {
-        toast.success(`¡Has elegido a un ${selected}!`);
-        // Aquí podrías guardar la selección y navegar
-        // navigate('/user/profile');
+        if (!selected) {
+            toast.error("Por favor selecciona una raza");
+            return;
+        }
+        
+        try {
+            await createCharacter(selected.id);
+            toast.success(`¡Has creado tu personaje ${selected.name}!`);
+            // Aquí podrías guardar la selección y navegar
+            // navigate('/user/profile');
+        } catch (error) {
+            toast.error("Error al crear el personaje");
+            console.error("Error creating character:", error);
+        }
     };
+
+    if (loading) {
+        return (
+            <PublicAuthLayout titleOverride="Elegí tu personaje">
+                <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+                </div>
+            </PublicAuthLayout>
+        );
+    }
     
-    const { stats, img, desc } = characters[selected];
+    if (!selected) {
+        return (
+            <PublicAuthLayout titleOverride="Elegí tu personaje">
+                <div className="text-center">
+                    <p className="text-gray-600">No hay razas disponibles</p>
+                </div>
+            </PublicAuthLayout>
+        );
+    }
     
     return ( 
-        <PublicAuthLayout titleOverride="Elegí tu personaje" imageSrc={img} imageAlt={`Imagen de ${selected}`}> 
-            <div className="flex flex-col items-center w-full max-w-md">
-                <label className="text-lg font-bold mb-4 text-yellow-700 drop-shadow">Selecciona tu personaje</label>
-                <div className="flex flex-wrap justify-center gap-4 mb-6">
-                    {Object.entries(characters).map(([key, char]) => (
+        <PublicAuthLayout titleOverride="Elegí tu personaje" imageSrc={selected.imageUrl} imageAlt={`Imagen de ${selected.name}`}> 
+            <div className="flex flex-col items-center w-full max-w-md min-h-0 overflow-y-auto py-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center mb-6"
+                >
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent drop-shadow-sm mb-2">
+                        Selecciona tu personaje
+                    </h2>
+                    <p className="text-gray-600 text-sm">Elige sabiamente, tu destino te espera</p>
+                </motion.div>
+
+                <motion.div 
+                    className="flex flex-wrap justify-center gap-3 mb-6"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    {races.map((race) => (
                         <motion.div
-                            key={key}
-                            whileHover={{ scale: 1.08 }}
-                            className={`relative flex flex-col items-center cursor-pointer rounded-xl p-2 transition-all duration-300 shadow-lg bg-white/80 border-2 ${selected === key ? 'border-yellow-400 ring-4 ring-yellow-200' : 'border-gray-200'}`}
-                            onClick={() => setSelected(key as keyof typeof characters)}
+                            key={race.id}
+                            whileHover={{ scale: 1.05, y: -5 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`relative flex flex-col items-center cursor-pointer rounded-xl p-3 transition-all duration-300 shadow-lg bg-white/90 border-2 backdrop-blur-sm ${
+                                selected.id === race.id 
+                                    ? `border-yellow-400 ring-4 ring-yellow-200 shadow-xl` 
+                                    : 'border-gray-200 hover:border-gray-300'
+                            }`}
+                            onClick={() => setSelected(race)}
                         >
-                            <img src={char.img} alt={key} className={`w-20 h-20 object-contain mb-2 ${selected === key ? 'drop-shadow-lg' : ''}`} />
-                            <span className={`font-bold text-base ${selected === key ? 'text-yellow-700' : 'text-gray-700'}`}>{key}</span>
-                            {selected === key && (
+                            <div className={`w-16 h-16 rounded-full p-2 mb-2 bg-gradient-to-br ${race.colorTheme.bgColor} flex items-center justify-center`}>
+                                <img src={race.imageUrl} alt={race.name} className={`w-full h-full object-contain ${selected.id === race.id ? 'drop-shadow-lg' : ''}`} />
+                            </div>
+                            <span className={`font-bold text-sm ${selected.id === race.id ? 'text-yellow-700' : 'text-gray-700'}`}>{race.name}</span>
+                            {selected.id === race.id && (
                                 <motion.div
                                     layoutId="glow"
                                     className="absolute inset-0 rounded-xl pointer-events-none"
-                                    style={{boxShadow: '0 0 24px 8px #fde68a88'}}
+                                    style={{boxShadow: '0 0 20px 6px #fde68a88'}}
                                 />
                             )}
                         </motion.div>
                     ))}
-                </div>
+                </motion.div>
+
                 <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="w-full bg-gradient-to-br from-yellow-50/80 to-purple-100/80 rounded-xl p-4 shadow-inner border border-yellow-200 mb-4"
+                    transition={{ delay: 0.4 }}
+                    className={`w-full bg-gradient-to-br ${selected.colorTheme.bgColor} rounded-xl p-5 shadow-lg border border-white/50 mb-6 backdrop-blur-sm`}
                 >
-                    <h3 className="text-xl font-bold text-purple-800 mb-2 flex items-center gap-2">
-                        <span>{selected}</span>
-                        <span className="text-2xl">✨</span>
-                    </h3>
-                    <p className="text-gray-700 italic mb-2">{desc}</p>
-                    <div className="grid grid-cols-2 gap-3 mt-2">
-                        {Object.entries(stats).map(([key, value]) => (
-                            <div key={key} className="flex flex-col items-center">
-                                <span className="text-lg mb-1">{statIcons[key as keyof typeof statIcons]}</span>
-                                <span className="text-xs font-semibold mb-1 capitalize">{key}</span>
-                                <div className="w-24 h-3 bg-gray-200 rounded-full overflow-hidden">
-                                    <div
-                                        style={{ width: `${value}%` }}
-                                        className={`h-full bg-gradient-to-r ${statColors[key as keyof typeof statColors]}`}
-                                    />
-                                </div>
-                                <span className="text-xs text-gray-600 mt-1">{value}</span>
-                            </div>
-                        ))}
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className={`text-xl font-bold bg-gradient-to-r ${selected.colorTheme.primary} bg-clip-text text-transparent flex items-center gap-2`}>
+                            <span>{selected.name}</span>
+                            <span className="text-2xl">✨</span>
+                        </h3>
+                        <div className="text-xs text-gray-500 bg-white/50 px-2 py-1 rounded-full">
+                            Nivel 1
+                        </div>
+                    </div>
+                    <p className="text-gray-700 italic mb-4 text-sm leading-relaxed">{selected.description}</p>
+                    
+                    <div className="space-y-3">
+                        <h4 className="text-sm font-semibold text-gray-600 mb-2">Estadísticas:</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                            {Object.entries(selected.baseStats).map(([key, value]) => (
+                                <motion.div 
+                                    key={key} 
+                                    className="flex flex-col items-center p-2 bg-white/60 rounded-lg"
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.5 + Object.keys(selected.baseStats).indexOf(key) * 0.1 }}
+                                >
+                                    <span className="text-xl mb-1">{statIcons[key as keyof typeof statIcons]}</span>
+                                    <span className="text-xs font-semibold mb-2 text-gray-600">{statLabels[key as keyof typeof statLabels]}</span>
+                                    <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${value}%` }}
+                                            transition={{ delay: 0.8, duration: 0.8 }}
+                                            className={`h-full bg-gradient-to-r ${statColors[key as keyof typeof statColors]} shadow-sm`}
+                                        />
+                                    </div>
+                                    <span className="text-xs font-bold text-gray-700 mt-1">{value}</span>
+                                </motion.div>
+                            ))}
+                        </div>
                     </div>
                 </motion.div>
+
                 <motion.button
-                    whileHover={{ scale: 1.07, background: 'linear-gradient(90deg,#facc15,#a78bfa,#f472b6)' }}
-                    whileTap={{ scale: 0.97 }}
-                    className="bg-gradient-to-r from-yellow-400 via-purple-400 to-pink-400 text-white font-bold px-8 py-3 rounded-xl shadow-lg mt-2 text-lg flex items-center gap-2 transition-all duration-300 hover:from-yellow-500 hover:to-pink-500"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="bg-gradient-to-r from-yellow-400 via-purple-400 to-pink-400 text-white font-bold px-10 py-4 rounded-xl shadow-xl text-lg flex items-center gap-3 transition-all duration-300 hover:from-yellow-500 hover:via-purple-500 hover:to-pink-500 cursor-pointer border-2 border-white/20 backdrop-blur-sm"
                     onClick={handleSelectCharacter}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
                 >
-                    🧙‍♂️ Jugar
+                    <span className="text-2xl">🧙‍♂️</span>
+                    <span>¡Jugar!</span>
+                    <span className="text-2xl">⚔️</span>
                 </motion.button>
+
+                <motion.p 
+                    className="text-xs text-gray-500 mt-4 text-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                >
+                    Tu aventura está a punto de comenzar...
+                </motion.p>
             </div>
         </PublicAuthLayout> 
     );

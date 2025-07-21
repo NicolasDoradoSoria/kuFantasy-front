@@ -1,11 +1,5 @@
+import type { UserInfo } from "@/dto/user/userInfo"
 import axiosClient from "./client/axios"
-
-interface UserInfo {
-    id: number;
-    name: string;
-    mail: string;
-    hasCharacter: boolean;
-}
 
 const AuthService = {
     login: async (loginDto: { mail: string, password: string }): Promise<string>  => {

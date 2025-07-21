@@ -1,21 +1,31 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Territories } from "@/utils/mocks/territories";
 import { TypeIcons } from "@/utils/enums/typeIcons";
 import { FeatureLabels } from "@/utils/enums/featureLabels";
 import { DifficultyColors } from "@/utils/enums/difficultyColors";
 import { useOnInit } from "@/hooks/useOnInit";
 import { TerritoryService } from "@/services/territory";
+import type { TerritorySummaryDTO } from "@/dto/territory/TerritorySummaryDTO";
+import type { TerritoryDTO } from "@/dto/territory/TerritoryDTO";
 
 
 const TerritoryPage = () => {
-  const [selected, setSelected] = useState<number>(Territories[0].id);
+  const [selected, setSelected] = useState<number | null>();
+  const [territories, setTerritories] = useState<TerritorySummaryDTO[]>([]);
+  const [selectedTerritory, setSelectedTerritory] = useState<TerritoryDTO | null>(null);
 
-  const selectedTerritory = Territories.find(t => t.id === selected);
+  const getTerritory = async(id: number) => {
+    const territory = await TerritoryService.getTerritory(id);
+    setSelectedTerritory(territory);
+  }
 
   useOnInit(async () => {
     const territories = await TerritoryService.getTerritories();
-    console.log(territories);
+    setTerritories(territories);
+    if (territories.length > 0) {
+      setSelected(territories[0].id);
+      getTerritory(territories[0].id);
+    }
   })
 
   return (
@@ -30,7 +40,7 @@ const TerritoryPage = () => {
           className="w-full h-full rounded-xl object-cover opacity-95"
         />
 
-        {Territories.map(t => (
+        {territories.map(t => (
 
           <motion.button
             key={t.id}
@@ -39,7 +49,10 @@ const TerritoryPage = () => {
               via-white to-yellow-100/80 hover:bg-yellow-200 transition-all duration-200 cursor-pointer
               ${selected === t.id ? "border-yellow-500 ring-4 ring-yellow-200 scale-110" : "border-gray-300"}
               `}
-            onClick={() => setSelected(t.id)}
+            onClick={() => {
+              setSelected(t.id);
+              getTerritory(t.id);
+            }}
             whileHover={{ scale: 1.13 }}
             whileTap={{ scale: 0.97 }}
           >

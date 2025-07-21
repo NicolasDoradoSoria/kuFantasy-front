@@ -33,7 +33,7 @@ const PublicAuthLayout = ({children, titleOverride, imageSrc = "/login-2.jpeg", 
     return (  
     <div className="h-screen flex bg-gradient-to-br from-purple-900 via-blue-900 to-black">
         <motion.div 
-            className="w-full md:w-1/2 bg-gradient-to-br from-white/95 via-blue-50/90 to-purple-50/95 backdrop-blur-sm flex flex-col justify-center items-center p-8 relative overflow-hidden"
+            className="w-full md:w-1/2 bg-gradient-to-br from-white/95 via-blue-50/90 to-purple-50/95 backdrop-blur-sm flex flex-col justify-center items-center p-8 relative overflow-y-auto min-h-screen"
             initial={{ opacity: 0, x: -500 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}

@@ -10,9 +10,9 @@ const LandingPage = () => {
     if (!isAuthenticated) {
       navigate('/register');
     } else if (userInfo?.hasCharacter) {
-      navigate('/character-select');
+      navigate('/user/characterSelect');
     } else {
-      navigate('/character-select');
+      navigate('/user/characterSelect');
     }
   };
 
