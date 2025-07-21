@@ -1,4 +1,3 @@
-import type { UserInfo } from "@/dto/user/userInfo";
 import axiosClient from "./client/axios";
 
 
@@ -7,10 +6,6 @@ const CharacterService = {
         await axiosClient.put(`/individuals/choose-race?raceId=${raceId}`);
     },
 
-    getUserCharacter: async (): Promise<UserInfo> => {
-        const response = await axiosClient.get("/user/me");
-        return response.data;
-    }
 }
 
 export default CharacterService; 
