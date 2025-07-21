@@ -6,34 +6,14 @@ import { mockRaces } from "@/utils/mocks/races";
 import PublicAuthLayout from "@/views/layout/publicAuthLayout";
 import { motion } from "framer-motion";
 import { useState } from "react";
-// import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-
-const statIcons = {
-    life: "❤️",
-    attack: "💪",
-    defense: "🛡️",
-    speed: "🏃",
-    magic: "🧠"
-}
-
-const statColors = {
-    life: "from-red-400 to-red-600",
-    attack: "from-yellow-300 to-yellow-500",
-    defense: "from-gray-400 to-gray-600",
-    speed: "from-green-400 to-green-600",
-    magic: "from-blue-400 to-blue-600"
-}
-
-const statLabels = {
-    life: "Vida",
-    attack: "Ataque",
-    defense: "Defensa",
-    speed: "Velocidad",
-    magic: "Magia"
-}
+import { useNavigate } from "react-router";
+import { statColors } from "@/utils/enums/statColors";
+import { statIcons } from "@/utils/enums/statIcons";
+import { statLabels } from "@/utils/enums/statLabels";
 
 const CharacterSelectPage = () => {
+    const navigate = useNavigate();
     const [selected, setSelected] = useState<RaceDTO | null>(null);
     const [races, setRaces] = useState<RaceDTO[]>([]);
     const [loading, setLoading] = useState(true);
@@ -59,7 +39,6 @@ const CharacterSelectPage = () => {
 
     const handleSelectCharacter = async () => {
         if (!selected) {
-            toast.error("Por favor selecciona una raza");
             return;
         }
         
@@ -67,7 +46,7 @@ const CharacterSelectPage = () => {
             await createCharacter(selected.id);
             toast.success(`¡Has creado tu personaje ${selected.name}!`);
             // Aquí podrías guardar la selección y navegar
-            // navigate('/user/profile');
+             navigate('/user/territory');
         } catch (error) {
             toast.error("Error al crear el personaje");
             console.error("Error creating character:", error);
@@ -189,8 +168,9 @@ const CharacterSelectPage = () => {
                 <motion.button
                     whileHover={{ scale: 1.05, y: -2 }}
                     whileTap={{ scale: 0.98 }}
-                    className="bg-gradient-to-r from-yellow-400 via-purple-400 to-pink-400 text-white font-bold px-10 py-4 rounded-xl shadow-xl text-lg flex items-center gap-3 transition-all duration-300 hover:from-yellow-500 hover:via-purple-500 hover:to-pink-500 cursor-pointer border-2 border-white/20 backdrop-blur-sm"
+                    className={`bg-gradient-to-r from-yellow-400 via-purple-400 to-pink-400 text-white font-bold px-10 py-4 rounded-xl shadow-xl text-lg flex items-center gap-3 transition-all duration-300 hover:from-yellow-500 hover:via-purple-500 hover:to-pink-500 cursor-pointer border-2 border-white/20 backdrop-blur-sm ${!selected ? "opacity-50 cursor-not-allowed" : ""}`}
                     onClick={handleSelectCharacter}
+                    disabled={!selected}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6 }}
