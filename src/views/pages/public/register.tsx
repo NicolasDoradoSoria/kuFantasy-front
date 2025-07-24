@@ -24,7 +24,6 @@ const RegisterPage = () => {
 
     const { handleError } = useErrorHandler()
 
-    const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const navigate = useNavigate()
@@ -68,7 +67,12 @@ const RegisterPage = () => {
 
     const onSubmit = async (data: FormData) => {
         try {
-            const { confirmPassword, termsAccepted, ...registerDto } = data
+            const registerDto = {
+                mail: data.mail,
+                rawPassword: data.rawPassword,
+                name: data.name,
+                lastName: data.lastName
+            };
             await RegisterService.registerUser(registerDto)
             toast.success('¡Registro exitoso! Se ha enviado un email para confirmar tu cuenta. Ya puedes iniciar sesión. 🧙‍♂️')
             navigate('/login')
@@ -149,7 +153,7 @@ const RegisterPage = () => {
                     delay={1.2}
                 >
                     <input
-                        type={showPassword ? "text" : "password"} 
+                        type="password" 
                         {...register("rawPassword", {
                             required: "La contraseña es obligatoria",
                             minLength: {

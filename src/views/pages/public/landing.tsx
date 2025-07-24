@@ -6,14 +6,14 @@ const LandingPage = () => {
   const { isAuthenticated, userInfo } = useAuth();
   const navigate = useNavigate();
 
+  const getLandingDestination = () => {
+    if (!isAuthenticated) return '/register';
+    if (userInfo?.hasCharacter) return '/user/territory';
+    return '/user/characterSelect';
+  };
+  
   const handleAction = () => {
-    if (!isAuthenticated) {
-      navigate('/register');
-    } else if (userInfo?.hasCharacter) {
-      navigate('/user/characterSelect');
-    } else {
-      navigate('/user/characterSelect');
-    }
+    navigate(getLandingDestination());
   };
 
   const getActionText = () => {
