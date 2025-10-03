@@ -5,9 +5,8 @@ import useAuth from "@/hooks/useAuth";
 const Header = () => {
     const { isAuthenticated, logout } = useAuth();
 
-    const handleLogout = () => {
-        logout();
-    };
+    const handleLogout = () => logout();
+    
 
     return ( 
         <motion.header
@@ -30,9 +29,9 @@ const Header = () => {
 
             {isAuthenticated ? (
                 <nav className="flex gap-2 md:gap-6 text-sm w-full md:w-auto justify-between md:justify-end">
-                    <Link to="/user/territory" className="relative group flex flex-col md:flex-row items-center gap-1 md:gap-2 flex-1 md:flex-none">
+                    <Link to="/user/map" className="relative group flex flex-col md:flex-row items-center gap-1 md:gap-2 flex-1 md:flex-none">
                         <span className="text-xl md:text-lg">🌍</span>
-                        <span className="font-medium text-xs md:text-sm">Territorio</span>
+                        <span className="font-medium text-xs md:text-sm">Mapa</span>
                         <span className="transition duration-300 absolute left-0 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-yellow-300 to-orange-400 transition-all group-hover:w-full" />
                     </Link>
                     <Link to="/user/inventory" className="relative group flex flex-col md:flex-row items-center gap-1 md:gap-2 flex-1 md:flex-none">

@@ -1,0 +1,23 @@
+// Mapa de colores de fondo por tipo de tienda
+export const storeTypeBg: Record<string, string> = {
+  BLACKSMITH: "from-yellow-900 via-yellow-700 to-yellow-600",
+  TAVERN: "from-orange-900 via-orange-700 to-yellow-600",
+  ARMOR_SHOP: "from-gray-700 via-gray-500 to-yellow-400",
+  WEAPON_SHOP: "from-red-900 via-red-700 to-yellow-600",
+  MAGIC_SHOP: "from-purple-900 via-purple-700 to-yellow-400",
+  ALCHEMY_SHOP: "from-green-900 via-green-700 to-yellow-400",
+  INN: "from-yellow-800 via-yellow-600 to-yellow-400",
+  STABLE: "from-amber-900 via-amber-700 to-yellow-500",
+  FISHMONGER: "from-blue-900 via-blue-700 to-yellow-400",
+  BAKERY: "from-yellow-700 via-yellow-500 to-yellow-300",
+  HERBALIST: "from-green-800 via-green-600 to-yellow-400",
+  JEWELRY_SHOP: "from-yellow-900 via-yellow-700 to-yellow-400",
+  PET_SHOP: "from-amber-800 via-amber-600 to-yellow-400",
+  BOOKSTORE: "from-yellow-900 via-yellow-700 to-yellow-400",
+  CURIO_SHOP: "from-yellow-900 via-yellow-700 to-yellow-400",
+  CARTOGRAPHER: "from-yellow-900 via-yellow-700 to-yellow-400",
+  HUNTER_SHACK: "from-green-900 via-green-700 to-yellow-400",
+  FLETCHER: "from-green-900 via-green-700 to-yellow-400",
+  FARMERS_MARKET: "from-green-900 via-green-700 to-yellow-400",
+  GENERAL_STORE: "from-yellow-900 via-yellow-700 to-yellow-400",
+};

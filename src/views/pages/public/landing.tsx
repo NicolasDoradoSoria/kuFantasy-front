@@ -7,8 +7,8 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const getLandingDestination = () => {
-    if (!isAuthenticated) return '/register';
-    if (userInfo?.hasCharacter) return '/user/territory';
+    if (!isAuthenticated) return '/userSelect';
+    if (userInfo?.hasCharacter) return '/user/map';
     return '/user/characterSelect';
   };
   

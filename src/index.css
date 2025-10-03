@@ -1,1 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
+
+.font-unifraktur {
+	font-family: 'UnifrakturCook', cursive;
+}
 @import "tailwindcss";
+
+.text-glow-gold {
+  text-shadow: 0 0 8px #ffe066, 0 0 16px #bfa14a;
+}
