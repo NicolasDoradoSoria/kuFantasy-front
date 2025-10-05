@@ -6,9 +6,10 @@ import { useNavigate } from "react-router";
 interface AuthSplitLayoutFormProps {
   children: ReactNode;
   actionTitle: string;
+  topOffsetClass?: string;
 }
 
-const AuthSplitLayoutForm = ({ children, actionTitle }: AuthSplitLayoutFormProps) => {
+const AuthSplitLayoutForm = ({ children, actionTitle, topOffsetClass }: AuthSplitLayoutFormProps) => {
   const navigate = useNavigate();
   
   const handleBackClick = () => {
@@ -17,7 +18,7 @@ const AuthSplitLayoutForm = ({ children, actionTitle }: AuthSplitLayoutFormProps
 
   return (
     <motion.div
-      className=" mt-[70px] w-full md:w-1/2 bg-gradient-to-br from-white/95 via-blue-50/90 to-purple-50/95 backdrop-blur-sm flex flex-col justify-center items-center overflow-y-auto"
+      className={`w-full md:w-1/2 bg-gradient-to-br from-white/95 via-blue-50/90 to-purple-50/95 backdrop-blur-sm flex flex-col justify-center items-center overflow-y-auto ${topOffsetClass ?? ""}`}
       initial={{ opacity: 0, x: -500 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8 }}

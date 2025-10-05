@@ -40,7 +40,7 @@ const LoginPage = () => {
 
     return (
 
-           <AuthSplitLayout >
+           <AuthSplitLayout>
                     <FormMotion onSubmit={handleSubmit(onSubmit)}>
 
                         <MotionField

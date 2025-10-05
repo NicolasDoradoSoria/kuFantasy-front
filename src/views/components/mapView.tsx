@@ -48,7 +48,7 @@ const MapView = ({
 
   return (
     <section
-      className="relative w-full max-w-[1200px] md:aspect-[1536/1024] mb-2 md:mb-8 rounded-xl shadow-2xl border-4 border-yellow-300 bg-[#f5ecd6] p-0 md:p-0 overflow-auto flex items-center justify-center"
+      className=" relative w-full max-w-[1200px] md:aspect-[1536/1024] mb-2 md:mb-8 rounded-xl shadow-2xl border-4 border-yellow-300 bg-[#f5ecd6] p-0 md:p-0 overflow-auto flex items-center justify-center"
       style={{
         minHeight: "80vh",
         maxHeight: "100vh",
