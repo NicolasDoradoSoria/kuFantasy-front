@@ -2,7 +2,7 @@ import { createEmptyLoginInfo, type LoginDTO } from "@/dto/user/login";
 import useAuth from "@/hooks/useAuth";
 import { useErrorHandler } from "@/router/context/errorHandler";
 import AuthService from "@/services/auth";
-import PublicAuthLayout from "@/views/layout/publicAuthLayout";
+import AuthSplitLayout  from "@/views/layout/authSplitLayout";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock } from "react-icons/fa";
@@ -40,7 +40,7 @@ const LoginPage = () => {
 
     return (
 
-           <PublicAuthLayout>
+           <AuthSplitLayout >
                     <FormMotion onSubmit={handleSubmit(onSubmit)}>
 
                         <MotionField
@@ -129,7 +129,7 @@ const LoginPage = () => {
                         </Link>
                     </motion.div>
            
-           </PublicAuthLayout>
+           </AuthSplitLayout >
       
     )
 }

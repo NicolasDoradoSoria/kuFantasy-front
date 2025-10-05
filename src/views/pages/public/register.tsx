@@ -2,7 +2,7 @@ import FormMotion from "@/components/FormMotion";
 import { useErrorHandler } from "@/router/context/errorHandler";
 import { RegisterService } from "@/services/register";
 import MotionField from "@/views/components/motion/field";
-import PublicAuthLayout from "@/views/layout/publicAuthLayout";
+import AuthSplitLayout  from "@/views/layout/authSplitLayout";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -86,7 +86,7 @@ const RegisterPage = () => {
     }
 
     return(
-        <PublicAuthLayout>
+        <AuthSplitLayout >
     
             <FormMotion onSubmit={handleSubmit(onSubmit)}>
 
@@ -272,7 +272,7 @@ const RegisterPage = () => {
                 </Link>
             </motion.div>
 
-        </PublicAuthLayout>
+        </AuthSplitLayout >
     )
 }
  
