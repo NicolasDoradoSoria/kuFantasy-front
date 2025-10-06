@@ -3,7 +3,7 @@ import type { TerritoryDetailDTO } from "@/dto/territory/TerritoryDetailDTO";
 import { useOnInit } from "@/hooks/useOnInit";
 import { TerritoryService } from "@/services/territory";
 import { useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { motion } from "framer-motion";
 import { Storefront } from "phosphor-react";
 import { storeTypeIcons } from "@/utils/enums/storeTypeIcons";
@@ -11,7 +11,15 @@ import { storeTypeBg } from "@/utils/mocks/storeTypeBg";
 
 const TownDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [territory, setTerritory] = useState<TerritoryDetailDTO | null>(null);
+
+  const handleStoreClick = (storeId: number) =>
+    navigate(`/user/propertyDetail/${storeId}?type=store`);
+  
+  const handleHouseClick = (houseId: number) =>
+    navigate(`/user/propertyDetail/${houseId}?type=house`);
 
   useOnInit(async () => {
     const territory = await TerritoryService.getTerritoryDetails(Number(id));
@@ -83,7 +91,7 @@ const TownDetailPage = () => {
         <motion.header
           className="shadow-2xl shadow-yellow-900 flex flex-col items-center gap-4 mb-4 p-3 bg-gradient-to-r from-yellow-100/80 to-yellow-200/80 rounded-lg border-2 border-yellow-300 bg-[url('/textura_Fondo.png')] bg-cover bg-blend-multiply bg-opacity-80"
           initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}F
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
           <div className="relative w-full flex justify-center mb-4">
@@ -104,10 +112,26 @@ const TownDetailPage = () => {
               viewBox="0 0 800 120"
               preserveAspectRatio="none"
             >
-              <path d="M20,60 C120,10 680,10 780,60" fill="none" stroke="#bfa14a" strokeWidth="2" opacity="0.6" />
-              <path d="M20,70 C120,120 680,120 780,70" fill="none" stroke="#8a5b2b" strokeWidth="3" opacity="0.25" />
+              <path
+                d="M20,60 C120,10 680,10 780,60"
+                fill="none"
+                stroke="#bfa14a"
+                strokeWidth="2"
+                opacity="0.6"
+              />
+              <path
+                d="M20,70 C120,120 680,120 780,70"
+                fill="none"
+                stroke="#8a5b2b"
+                strokeWidth="3"
+                opacity="0.25"
+              />
               {/* corner filigree */}
-              <g transform="translate(8,8) scale(0.6)" fill="#bfa14a" opacity="0.55">
+              <g
+                transform="translate(8,8) scale(0.6)"
+                fill="#bfa14a"
+                opacity="0.55"
+              >
                 <circle cx="8" cy="8" r="6" />
               </g>
             </svg>
@@ -115,8 +139,9 @@ const TownDetailPage = () => {
               id="town-title"
               className="relative z-10 text-5xl font-extrabold text-center text-amber-900 leading-tight drop-shadow-lg tracking-wider bg-[url('/pergamino-texture.png')] bg-cover rounded-lg px-10 py-4 font-unifraktur text-glow-gold"
               style={{
-                border: '2px solid rgba(95,65,20,0.9)',
-                boxShadow: 'inset 0 -8px 14px rgba(0,0,0,0.16), 0 10px 18px rgba(0,0,0,0.14)'
+                border: "2px solid rgba(95,65,20,0.9)",
+                boxShadow:
+                  "inset 0 -8px 14px rgba(0,0,0,0.16), 0 10px 18px rgba(0,0,0,0.14)",
               }}
               initial={{ opacity: 0, y: -30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -241,7 +266,7 @@ const TownDetailPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
         >
-          <h2 className="text-2xl font-bold mb-4 text-amber-800 tracking-wide flex items-center gap-2 font-unifraktur">
+          <h2 className=" text-2xl font-bold mb-4 text-amber-800 tracking-wide flex items-center gap-2 font-unifraktur">
             <span className="inline-block w-7 h-7 align-middle">
               <svg
                 viewBox="0 0 32 32"
@@ -284,13 +309,19 @@ const TownDetailPage = () => {
                 transition={{ delay: 0.7 + idx * 0.1, duration: 0.5 }}
                 whileHover={{ scale: 1.05, y: -5 }}
                 whileTap={{ scale: 0.95 }}
-                className={`group focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-lg border-2 border-amber-700 rounded-xl overflow-hidden w-40 hover:shadow-xl transition-all duration-200 ${
+                className={`cursor-pointer group focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-lg border-2 border-amber-700 rounded-xl overflow-hidden w-40 hover:shadow-xl transition-all duration-200 ${
                   storeTypeBg[local.type] ||
                   "from-amber-100 via-amber-50 to-white"
-                  }`}
-                  style={{ boxShadow: 'inset 0 6px 12px rgba(0,0,0,0.06), 0 8px 16px rgba(0,0,0,0.08)' }}
+                }`}
+                style={{
+                  boxShadow:
+                    "inset 0 6px 12px rgba(0,0,0,0.06), 0 8px 16px rgba(0,0,0,0.08)",
+                }}
               >
-                <div className="w-full p-3 flex items-center justify-center bg-amber-800/10 group-hover:bg-amber-800/20 transition-colors">
+                <div
+                  onClick={() => handleStoreClick(local.id)}
+                  className="w-full p-3 flex items-center justify-center bg-amber-800/10 group-hover:bg-amber-800/20 transition-colors"
+                >
                   <span className="text-3xl mb-0">
                     {storeTypeIcons[local.type] || (
                       <Storefront size={32} weight="duotone" />
@@ -298,7 +329,9 @@ const TownDetailPage = () => {
                   </span>
                 </div>
                 <div className="p-3 bg-white/70 text-center">
-                  <span className="font-semibold text-zinc-800 text-lg">{local.name}</span>
+                  <span className="font-semibold text-zinc-800 text-lg">
+                    {local.name}
+                  </span>
                 </div>
               </motion.div>
             ))}
@@ -341,13 +374,17 @@ const TownDetailPage = () => {
             {territory.houses.map((casa, idx) => (
               <motion.button
                 key={idx}
+                onClick={() => handleHouseClick(casa.id)}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1.0 + idx * 0.1, duration: 0.5 }}
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-gradient-to-br from-amber-900 via-amber-700 to-amber-600 text-amber-50 text-xl rounded-xl py-3 px-8 shadow-inner border-2 border-amber-900 hover:from-amber-800 hover:to-amber-600 transition-all duration-200 font-semibold hover:shadow-xl ring-2 ring-amber-900/30"
-                style={{ boxShadow: 'inset 0 -6px 12px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.06)' }}
+                className="cursor-pointer bg-gradient-to-br from-amber-900 via-amber-700 to-amber-600 text-amber-50 text-xl rounded-xl py-3 px-8 shadow-inner border-2 border-amber-900 hover:from-amber-800 hover:to-amber-600 transition-all duration-200 font-semibold hover:shadow-xl ring-2 ring-amber-900/30"
+                style={{
+                  boxShadow:
+                    "inset 0 -6px 12px rgba(0,0,0,0.12), 0 6px 12px rgba(0,0,0,0.06)",
+                }}
               >
                 {casa.name}
               </motion.button>
@@ -367,8 +404,12 @@ const TownDetailPage = () => {
           <div className="flex gap-8 flex-wrap">
             {territory.npcs.map((npc, idx) => {
               const quote = (npc as { quote?: string }).quote;
-              const npcBg = idx % 2 === 0 ? 'from-yellow-50 via-white to-yellow-100' : 'from-white via-amber-50 to-yellow-50';
-              const borderColor = idx % 2 === 0 ? 'border-yellow-700' : 'border-amber-700';
+              const npcBg =
+                idx % 2 === 0
+                  ? "from-yellow-50 via-white to-yellow-100"
+                  : "from-white via-amber-50 to-yellow-50";
+              const borderColor =
+                idx % 2 === 0 ? "border-yellow-700" : "border-amber-700";
               return (
                 <motion.div
                   key={idx}
@@ -378,7 +419,10 @@ const TownDetailPage = () => {
                   whileHover={{ scale: 1.07, rotate: 1, y: -5 }}
                   whileTap={{ scale: 0.95 }}
                   className={`flex flex-col items-center bg-gradient-to-br ${npcBg} rounded-2xl p-5 shadow-lg ${borderColor} w-48 hover:shadow-yellow-400 transition-all duration-200 relative`}
-                  style={{ boxShadow: 'inset 0 8px 18px rgba(0,0,0,0.08), 0 10px 20px rgba(0,0,0,0.06)' }}
+                  style={{
+                    boxShadow:
+                      "inset 0 8px 18px rgba(0,0,0,0.08), 0 10px 20px rgba(0,0,0,0.06)",
+                  }}
                 >
                   <img
                     src={npc.imageUrl}

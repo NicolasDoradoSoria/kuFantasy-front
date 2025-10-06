@@ -11,6 +11,7 @@ import NotFoundPage from '@/views/pages/public/notFound'
 import CharacterSelectPage from '@/views/pages/private/characterSelect'
 import TownDetailPage from '@/views/pages/private/townDetail'
 import MapPage from '@/views/pages/private/map'
+import PropertyDetailPage from '@/views/pages/private/propertyDetail'
 
 export const router = createBrowserRouter([
 {
@@ -38,6 +39,8 @@ export const router = createBrowserRouter([
         {path: "characterSelect", element: <BackEndCaller child={<CharacterSelectPage />} />},
         {path: "map", element: <BackEndCaller child={<MapPage />} />},
         {path: "townDetail/:id", element: <BackEndCaller child={<TownDetailPage />} />},
+        {path: "propertyDetail/:id", element: <BackEndCaller child={<PropertyDetailPage />} />},
+
     ]
 },
 { path: '*', element: <NotFoundPage /> },
