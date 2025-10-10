@@ -32,7 +32,7 @@ const PropertyInfo: FC<PropertyInfoProps> = ({ property }) => {
     <motion.section
       role="region"
       aria-labelledby="property-title"
-      className="shadow-2xl shadow-yellow-900 md:w-1/2 flex flex-col justify-center p-8 bg-gradient-to-br from-[#f5ecd6] via-[#f0e6c8] to-[#e8dcc0] rounded-2xl m-6 border-4 border-yellow-900 relative z-10 overflow-hidden"
+      className="shadow-2xl shadow-yellow-900 md:w-1/2 flex flex-col p-8 bg-gradient-to-br from-[#f5ecd6] via-[#f0e6c8] to-[#e8dcc0] rounded-2xl m-6 border-4 border-yellow-900 relative z-10 overflow-hidden"
       style={{
         backgroundImage: `radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.03) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.03) 0%, transparent 50%)`,
       }}

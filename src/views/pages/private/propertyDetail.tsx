@@ -70,9 +70,6 @@ const PropertyDetailPage = () => {
 
   return (
     <main className="flex flex-col mt-[50px] md:flex-row min-h-screen bg-gradient-to-br from-[#e9d8a6] via-[#b4a078] to-[#6c584c] relative overflow-hidden">
-      {/* Textura de fondo sutil */}
-      <div className="absolute inset-0 opacity-5 bg-gradient-to-br from-yellow-900/20 via-transparent to-yellow-700/20"></div>
-
       {/* Imagen */}
       <PropertyImage
         imageUrl={property.type === "store" ? property.imageUrl : ""}
